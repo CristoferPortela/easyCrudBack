@@ -41,6 +41,7 @@ app.route('/employers/:id')
 })
 
 app.post('/register', (req, res) => {
+    
     db.collection('futureEmployers').insertOne(req.body, (err, result) =>{
         if (err) return console.log(err)
 
