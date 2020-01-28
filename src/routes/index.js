@@ -1,17 +1,15 @@
 'use strict'
 module.exports = app => {
-    app.get('/', (req, res) => {
-        console.log("oi")
-        res.send("oi")
-    })
+    app.get('/', (req, res) => res.send("oi"))
 
-    const mid = app.middlewares
+    const users = app.middlewares.users
 
-    app.get('/employers', mid.users.find)
+
+    app.get('/employers', users.index)
 
     app.route('/employers/:id')
-        .get(mid.users.getEmployers)
-        .put(mid.users.postEmployers)
+        .get(users.show)
+        .put(users.edit)
 
-    app.post('/register', mid.users.register)
+    app.post('/register', users.store)
 }
