@@ -6,10 +6,14 @@ module.exports = app => {
     const { emailValidate, notNull } = app.middlewares.exceptions
 
     const index = (req, res) => {
-        app.db.collection('futureEmployers').find().toArray((err, results) => {
-            if (err) return console.log(err)
-            res.json(results)
-        })
+
+        app.db.collection('futureEmployers')
+            .find({ deleted: null })
+                .toArray((err, results) => {
+
+                if (err) return console.log(err)
+                return res.json(results)
+            })
     }
 
     const show = (req, res) => {
@@ -27,6 +31,9 @@ module.exports = app => {
 
         let id = req.params.id
 
+        if (id === undefined)
+            return res.redirect('/employers')
+
         app.db.collection('futureEmployers')
             .updateOne({ _id: ObjectID(id) }, {$set: req.body}, (err, result) => {
 
@@ -42,11 +49,11 @@ module.exports = app => {
             emailValidate(req.body.email, "Email incorreto")
             notNull(req.body.name, "Nome não citado")
             notNull(req.body.field, "Campo de trabalho desejado não citado")
-            notNull(req.body.name, "Por favor, envie o curriculo")
+            //notNull(req.body.curriculum, "Por favor, envie o curriculo")
         } catch (e) {
             return res.status(400).send(e)
         }        
-
+// colocar cidade e estado
         const store = {
             name: req.body.name,
             field: req.body.field,
@@ -58,9 +65,29 @@ module.exports = app => {
         app.db.collection('futureEmployers').insertOne(store, (err, result) =>{
             if (err) return console.log(err)
     
-            res.redirect(`/employers/${ result.ops[0]._id }`)
-        })
+            //res.redirect(`/employers/${ result.ops[0]._id }`)
+	    res.json(result.ops)        
+	})
     }
 
-    return { index, show, edit, store }
+    const kill = (req, res) => {
+
+        // this is a kind of soft delete, once we do not want to lose all our
+        // data, but just not want to display it
+
+        let id = req.params.id
+
+        if (id === undefined)
+            return res.redirect('/employers')
+
+        app.db.collection('futureEmployers')
+            .updateOne({ _id: ObjectID(id) }, {$set: {deleted: true}}, (err, result) => {
+
+                if (err) return console.log(err)
+
+                res.redirect(`/employers`)
+            })  
+    }
+
+    return { index, show, edit, store, kill }
 }
