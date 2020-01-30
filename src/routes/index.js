@@ -1,6 +1,6 @@
 'use strict'
 module.exports = app => {
-    app.get('/', (req, res) => res.send("oi"))
+    // app.get('/', (req, res) => res.send("oi"))
 
     const users = app.middlewares.users
 
@@ -10,6 +10,7 @@ module.exports = app => {
     app.route('/employers/:id')
         .get(users.show)
         .put(users.edit)
+        .delete(users.kill)
 
     app.post('/register', users.store)
 }
