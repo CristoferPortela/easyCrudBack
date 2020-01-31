@@ -14,4 +14,6 @@ consign({ cwd: 'src' })
 
 const port = 2020
 
-app.listen(port, () => console.log(`Server running on ${port}`))
+const server = app.listen(port, () => console.log(`Server running on ${port}`))
+
+module.exports = server
