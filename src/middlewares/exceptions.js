@@ -6,11 +6,13 @@ module.exports = app => {
         
         if(!email.match(reg))
             throw msg
+        return true
     }
 
-    const notNull = (sub,msg) => {
+    const notNull = (sub, msg) => {
         if (sub == null)
             throw msg
+        return true
     }
 
     return { emailValidate, notNull }
