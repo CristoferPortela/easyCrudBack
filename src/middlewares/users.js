@@ -10,8 +10,9 @@ module.exports = app => {
         app.db.collection('futureEmployers')
             .find({ deleted: null })
                 .toArray((err, results) => {
-
                 if (err) return console.log(err)
+                
+                res.status(200)
                 return res.json(results)
             })
     }
