@@ -1,17 +1,20 @@
 const { secret } = require('../../.env')
 const jwt = require('jsonwebtoken')
 // const bcrypt = require('bcrypt')
+const passport = require('passport')
+const passpJWT = require('passport-jwt')
+const { Strategy, ExtractJwt } = passpJWT
 
 module.exports = app => {
 
-    const generateToken = async (req, res) => {
+    const generateToken = (req, res) => {
         // if (!req.body.email || !req.body.password) 
         if (!req.body.email)   
             return res.status(400).send("Usuário ou senha faltando")
         
 
-        await app.db.collection('futureEmployers')
-            .findOne({ email: req.body.email, deleted: null })
+        app.db.collection('futureEmployers')
+            .find({ email: req.body.email, deleted: null })
             .toArray((err, result) => {
                 if (err) return console.log(err)
 
@@ -50,5 +53,29 @@ module.exports = app => {
             return res.send(false)
         }
     }
-    return { generateToken, getToken }
+
+    const params = {
+        secretOrKey: secret,
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+    }
+
+    const strategy = new Strategy(params, (payload, done) => {
+        app.db.collection('futureEmployers')
+            .find({ _id: payload.id })
+            .toArray((err, result) => {
+                if (err) done(err, false)
+
+                try {
+                    const user = result[0]
+
+                    done(null, user !== [] ? { ...payload } : false)
+                } catch(e) {
+                    done(e, false)
+                }
+            })
+    })
+
+    passport.use(strategy)
+
+    return { generateToken, getToken, authenticate: () => passport.authenticate('jwt', { session: false }) }
 }

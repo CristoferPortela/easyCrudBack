@@ -60,15 +60,16 @@ module.exports = app => {
             field: req.body.field,
             email: req.body.email,
             tel: req.body.tel,
-            curriculum: req.body.curriculum
+            curriculum: req.body.curriculum,
+            deleted: null
         }
 
         app.db.collection('futureEmployers').insertOne(store, (err, result) =>{
             if (err) return console.log(err)
     
             //res.redirect(`/employers/${ result.ops[0]._id }`)
-	    res.json(result.ops)        
-	})
+	        res.json(result.ops)        
+	    })
     }
 
     const kill = (req, res) => {
@@ -82,7 +83,7 @@ module.exports = app => {
             return res.redirect('/employers')
 
         app.db.collection('futureEmployers')
-            .updateOne({ _id: ObjectID(id) }, {$set: {deleted: true}}, (err, result) => {
+            .updateOne({ _id: ObjectID(id) }, {$set: { deleted: new Date() }}, (err, result) => {
 
                 if (err) return console.log(err)
 
