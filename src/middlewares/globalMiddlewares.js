@@ -8,8 +8,8 @@ const cors = require('cors')
  */
 
 module.exports = app => {
-    
+
+    app.use(cors())
     app.use(bp.urlencoded({ extended: true }))
     app.use(bp.json())
-    app.use(cors())
 }
