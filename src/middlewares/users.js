@@ -24,7 +24,7 @@ module.exports = app => {
         app.db.collection('futureEmployers')
             .find({ _id: ObjectID(id) }).toArray((err, results) => {
                 if (err) return res.send(err)
-                res.json(results)
+                return res.json(results)
             })
     }
 
