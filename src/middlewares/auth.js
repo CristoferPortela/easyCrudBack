@@ -77,5 +77,9 @@ module.exports = app => {
 
     passport.use(strategy)
 
-    return { generateToken, getToken, authenticate: () => passport.authenticate('jwt', { session: false }) }
+    return { 
+        generateToken, 
+        getToken, 
+        authenticate: () => passport.authenticate('jwt', { session: false }) 
+    }
 }
