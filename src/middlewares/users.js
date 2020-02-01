@@ -54,7 +54,7 @@ module.exports = app => {
         } catch (e) {
             return res.status(400).send(e)
         }        
-// colocar cidade e estado
+        // put city and state
         const store = {
             name: req.body.name,
             field: req.body.field,
