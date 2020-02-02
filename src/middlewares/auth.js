@@ -28,8 +28,6 @@ module.exports = app => {
 
                     const payload = {
                         id: user._id,
-                        name: user.name,
-                        email: user.email,
                         iat: now,
                         exp: now + (60 * 60 * 24 *7)
                     }
